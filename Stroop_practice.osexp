@@ -1,0 +1,219 @@
+---
+API: 2.1
+OpenSesame: 3.2.8
+Platform: nt
+---
+set width 1024
+set uniform_coordinates yes
+set title "Extended template"
+set subject_parity even
+set subject_nr 0
+set start Stroop_task
+set sound_sample_size -16
+set sound_freq 48000
+set sound_channels 2
+set sound_buf_size 1024
+set round_decimals 2
+set height 768
+set fullscreen no
+set form_clicks no
+set foreground white
+set font_underline no
+set font_size 18
+set font_italic no
+set font_family mono
+set font_bold no
+set experiment_path "c:\\Program Files (x86)\\OpenSesame\\share\\opensesame_resources\\templates"
+set disable_garbage_collection yes
+set description "A template containing a practice and an experimental phase"
+set coordinates uniform
+set compensation 0
+set canvas_backend xpyriment
+set bidi yes
+set background black
+
+define sequence Stroop_task
+	set flush_keyboard yes
+	set description "The main sequence of the experiment"
+	run about_this_template always
+	run instructions always
+	run practice_loop always
+	run end_of_practice always
+	run experimental_loop always
+	run end_of_experiment always
+
+define notepad about_this_template
+	__note__
+	This template already contains the basic structure of a typical experiment.
+	It consists of a practice phase, followed by an experimental phase. For more
+	information, please visit <http://osdoc.cogsci.nl/>
+	Have fun with OpenSesame!
+	__end__
+	set description "Some pointers to help you gest started!"
+
+define loop block_loop
+	set source_file ""
+	set source table
+	set skip 0
+	set repeat 1
+	set order random
+	set offset no
+	set item trial_sequence
+	set description "A single block of trials"
+	set cycles 9
+	set continuous no
+	set column_order ""
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 font_colour red
+	setcycle 0 word_identity red
+	setcycle 0 correct_response r
+	setcycle 0 congruency congruent
+	setcycle 1 font_colour green
+	setcycle 1 word_identity red
+	setcycle 1 correct_response g
+	setcycle 1 congruency incongruent
+	setcycle 2 font_colour blue
+	setcycle 2 word_identity red
+	setcycle 2 correct_response b
+	setcycle 2 congruency incongruent
+	setcycle 3 font_colour red
+	setcycle 3 word_identity green
+	setcycle 3 correct_response r
+	setcycle 3 congruency incongruent
+	setcycle 4 font_colour green
+	setcycle 4 word_identity green
+	setcycle 4 correct_response g
+	setcycle 4 congruency congruent
+	setcycle 5 font_colour blue
+	setcycle 5 word_identity green
+	setcycle 5 correct_response b
+	setcycle 5 congruency incongruent
+	setcycle 6 font_colour red
+	setcycle 6 word_identity blue
+	setcycle 6 correct_response r
+	setcycle 6 congruency incongruent
+	setcycle 7 font_colour green
+	setcycle 7 word_identity blue
+	setcycle 7 correct_response g
+	setcycle 7 congruency incongruent
+	setcycle 8 font_colour blue
+	setcycle 8 word_identity blue
+	setcycle 8 correct_response b
+	setcycle 8 congruency congruent
+	run trial_sequence
+
+define sequence block_sequence
+	set flush_keyboard yes
+	set description "A sequence containing a single block of trials followed by feedback to the participant"
+	run reset_feedback always
+	run logger always
+	run block_loop always
+	run feedback always
+
+define sketchpad correct_feedback
+	set duration 745
+	set description "Displays stimuli"
+	draw circle color="#00ff00" fill=1 penwidth=1 r=32 show_if=always x=0 y=0 z_index=0
+
+define sketchpad end_of_experiment
+	set start_response_interval no
+	set duration keypress
+	set description "A sketchpad notifying the participant that the experiment is finished"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=28 html=yes show_if=always text="Press any key to exit" x=0.0 y=128.0 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=28 html=yes show_if=always text="The experiment is finished<br /><br />Thank you for your participation" x=0 y=0 z_index=0
+
+define sketchpad end_of_practice
+	set start_response_interval no
+	set duration keypress
+	set description "A sketchpad notifying the participant that the practice phase is finished"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=28 html=yes show_if=always text="Press any key to continue" x=0.0 y=128.0 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=28 html=yes show_if=always text="You just finished the practice session <br /><br />You are now ready to start the experiment" x=0 y=0 z_index=0
+
+define loop experimental_loop
+	set source table
+	set skip 0
+	set repeat 12
+	set order random
+	set offset no
+	set item block_sequence
+	set description "A loop containing one or more experimental blocks"
+	set cycles 1
+	set continuous no
+	set column_order practice
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 practice no
+	run block_sequence
+
+define feedback feedback
+	set reset_variables yes
+	set duration keypress
+	set description "Provides feedback to the participant"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=28 html=yes show_if=always text="Your average response time was [avg_rt]ms<br /><br />Your accuracy was [acc]%<br /><br />Press any key to continue" x=0.0 y=32.0 z_index=0
+
+define sketchpad fixation_dot
+	set start_response_interval no
+	set duration 495
+	set description "Displays stimuli"
+	draw fixdot color=white show_if=always style=default x=0 y=0 z_index=0
+	draw fixdot color=white show_if=always style=default x=0 y=0 z_index=0
+
+define sketchpad incorrect_feedback
+	set duration 745
+	set description "Displays stimuli"
+	draw circle color="#ff0000" fill=1 penwidth=1 r=32 show_if=always x=0 y=0 z_index=0
+
+define sketchpad instructions
+	set start_response_interval no
+	set duration keypress
+	set description "A sketchpad containing the instructions for the participant"
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=32 html=yes show_if=always text="Press any key to begin!" x=0.0 y=160.0 z_index=0
+	draw textline center=1 color=white font_bold=no font_family=mono font_italic=no font_size=32 html=yes show_if=always text="In this task a coloured word is presented in the middle of the screen. <br /><br />You need to respond to the font-colour of the word (NOT to the name of the word) presented pressing the 'r' key for red, 'b' for blue and 'g' for green. " x=0.0 y=-32.0 z_index=0
+
+define keyboard_response keyboard_response
+	set timeout infinite
+	set flush yes
+	set event_type keyrelease
+	set duration keypress
+	set description "Collects keyboard responses"
+	set allowed_responses "r;g;b"
+
+define logger logger
+	set description "Logs experimental data"
+	set auto_log yes
+
+define loop practice_loop
+	set source table
+	set skip 0
+	set repeat 2
+	set order random
+	set offset no
+	set item block_sequence
+	set description "A loop containing one or more practice blocks"
+	set cycles 1
+	set continuous no
+	set column_order practice
+	set break_if_on_first yes
+	set break_if never
+	setcycle 0 practice yes
+	run block_sequence
+
+define reset_feedback reset_feedback
+	set description "Resets the feedback variables, such as 'avg_rt' and 'acc'"
+
+define sketchpad stimuli
+	set duration keypress
+	set description "Displays stimuli"
+	draw textline center=1 color="[font_colour]" font_bold=no font_family=mono font_italic=no font_size=52 html=yes show_if=always text="[word_identity]" x=0 y=0 z_index=0
+
+define sequence trial_sequence
+	set flush_keyboard yes
+	set description "A single trial"
+	run fixation_dot always
+	run stimuli always
+	run keyboard_response always
+	run correct_feedback "[correct]=1"
+	run incorrect_feedback "[correct]=0"
+	run logger always
+
